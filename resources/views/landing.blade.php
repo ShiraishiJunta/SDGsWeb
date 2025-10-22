@@ -1,65 +1,6 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.app')
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Relawan Aksi Sosial - Bersama untuk Kemanusiaan</title>
-
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="//unpkg.com/alpinejs" defer></script>
-
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-</head>
-
-<body class="bg-gray-50 text-gray-800">
-  <!-- HEADER -->
-  <header class="bg-white shadow-sm border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-            <i data-lucide="users" class="text-white w-6 h-6"></i>
-          </div>
-          <div>
-            <h1 class="text-xl font-bold text-gray-900">Relawan Aksi Sosial</h1>
-            <p class="text-sm text-gray-500">Platform Kemanusiaan & Komunitas</p>
-          </div>
-        </div>
-
-        <nav class="hidden md:flex space-x-6">
-          <a href="{{ route('kegiatan.index') }}"
-            class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">Kegiatan</a>
-          <nav class="hidden md:flex space-x-6">
-            <a href="{{ route('organizer.events') }}"
-              class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">Penyelenggara</a>
-          </nav>
-
-          @php
-            $organizer = session('organizer');
-          @endphp
-
-          @if ($organizer)
-            <div class="flex items-center space-x-3">
-              <span class="text-gray-700 text-sm font-medium">Halo, {{ $organizer->name }}</span>
-              <button @click.prevent="$dispatch('logout-confirm')"
-                class="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700 transition-colors">
-                Logout
-              </button>
-            </div>
-          @else
-            <div class="flex space-x-3">
-              <a href="/organizer/login"
-                class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Login</a>
-              <a href="/organizer/register"
-                class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors">Daftar</a>
-            </div>
-          @endif
-      </div>
-    </div>
-  </header>
+@section('content')
 
   <!-- HERO SECTION -->
   <section class="bg-blue-50 py-16 text-center">
@@ -69,7 +10,7 @@
         Temukan kegiatan sosial dan kemanusiaan di seluruh Indonesia. Jadilah bagian dari perubahan positif untuk dunia
         yang lebih baik.
       </p>
-      <a href="/organizer/register"
+      <a href="{{ route('organizer.register.show') }}"
         class="bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all">Gabung
         Sekarang</a>
     </div>
@@ -128,29 +69,11 @@
       <h3 class="text-3xl font-bold text-gray-900 mb-4">Siap Menjadi Bagian dari Aksi Sosial?</h3>
       <p class="text-lg text-gray-600 mb-8">Mari kita ciptakan perubahan kecil yang berdampak besar untuk masyarakat.
       </p>
-      <a href="/organizer/register"
+      <a href="{{ route('organizer.register.show') }}"
         class="bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all">Daftar
         Sekarang</a>
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="bg-gray-100 py-10 border-t border-gray-200">
-    <div class="max-w-7xl mx-auto px-6 text-center">
-      <p class="text-gray-600 mb-4">&copy; 2025 Relawan Aksi Sosial. Semua Hak Dilindungi.</p>
-      <div class="flex justify-center space-x-4 text-gray-500">
-        <i data-lucide="facebook" class="w-5 h-5 hover:text-blue-600 cursor-pointer"></i>
-        <i data-lucide="twitter" class="w-5 h-5 hover:text-sky-500 cursor-pointer"></i>
-        <i data-lucide="instagram" class="w-5 h-5 hover:text-pink-500 cursor-pointer"></i>
-        <i data-lucide="mail" class="w-5 h-5 hover:text-red-500 cursor-pointer"></i>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    lucide.createIcons();
-  </script>
-  @include('partials.popup-error')
-</body>
-
-</html>
+@endsection
+  

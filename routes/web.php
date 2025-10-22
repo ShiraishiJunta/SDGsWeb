@@ -29,6 +29,8 @@ Route::prefix('organizer')->group(function () {
     Route::get('/register', [OrganizerAuthController::class, 'showRegister'])->name('organizer.register.show');
     Route::post('/register', [OrganizerAuthController::class, 'register'])->name('organizer.register.submit');
     Route::get('/logout', [OrganizerAuthController::class, 'logout'])->name('organizer.logout');
+        Route::put('/events/{event}', [EventController::class, 'update'])->name('organizer.events.update');
+
 });
 
 
@@ -45,11 +47,12 @@ Route::prefix('organizer')->name('organizer.')
     // ---------------------------------
     ->group(function () {
 
-    Route::get('/events', [EventController::class, 'index'])->name('events');
-    Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
-    Route::post('/events', [EventController::class, 'store'])->name('events.store');
-    Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
-    Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
-    Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
+        Route::get('/events', [EventController::class, 'index'])->name('events');
+        Route::get('/events/create', [EventController::class, 'create'])->name('events.create');
+        Route::post('/events', [EventController::class, 'store'])->name('events.store');
+        Route::get('/events/{event}/edit', [EventController::class, 'edit'])->name('events.edit');
+        Route::put('/events/{event}', [EventController::class, 'update'])->name('events.update');
+        Route::delete('/events/{event}', [EventController::class, 'destroy'])->name('events.destroy');
+        // routes/web.php (di dalam grup 'organizer')
 
-});
+    });

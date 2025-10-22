@@ -10,8 +10,15 @@ class EventController extends Controller
     // Tampilkan hanya event milik organizer yang sedang login
     public function index()
     {
+        // AMBIL ID DARI SESSION
         $organizerId = session('organizer')->id;
-        $events = Event::where('organizer_id', $organizerId)->latest()->get();
+        
+        // --- TAMBAHKAN withCount DI SINI ---
+        $events = Event::where('organizer_id', $organizerId)
+                       ->withCount('registrations') // <-- TAMBAHKAN INI
+                       ->latest()
+                       ->get();
+                       
         return view('organizers.events', compact('events'));
     }
 

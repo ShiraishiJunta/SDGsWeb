@@ -56,10 +56,10 @@ public function login(Request $request)
 
     return back()->withErrors(['email' => 'Email atau password salah.']);
 }
-
-    public function logout()
+public function logout()
     {
         session()->forget('organizer');
-        return redirect('/')->with('success', 'Anda telah logout.');
+        // Arahkan ke rute 'home' setelah logout
+        return redirect()->route('home');
     }
 }
