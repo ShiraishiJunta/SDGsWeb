@@ -51,7 +51,7 @@
 
         <button @click="show = false"
           class="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg
-                     hover:bg-blue-700 transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                       hover:bg-blue-700 transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
           Mulai Menjelajah
         </button>
       </div>
@@ -271,7 +271,7 @@
     fetchEvents();
   </script>
   <script>lucide.createIcons();</script>
-
+  @include('partials.popup-error')
 </body>
 
 </html>

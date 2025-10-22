@@ -150,6 +150,7 @@
   <script>
     lucide.createIcons();
   </script>
+  @include('partials.popup-error')
 </body>
 
 </html>
