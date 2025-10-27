@@ -414,7 +414,21 @@
             baseUrl: "{{ url('/') }}",
 
             // Computed property untuk filter volunteer (sudah benar)
-            get filteredVolunteers() { /* ... logika filter ... */ },
+            // PERBAIKAN: Computed property filter volunteers dengan cek Array
+            get filteredVolunteers() {
+                if (!Array.isArray(this.detailData.volunteers)) {
+                    // console.warn('detailData.volunteers is not an array:', this.detailData.volunteers); // Optional warning
+                    return []; // Selalu kembalikan array kosong jika bukan array
+                }
+                const searchTerm = (this.detailData.searchTerm || '').trim().toLowerCase();
+                if (!searchTerm) return this.detailData.volunteers; // Kembalikan semua jika tidak ada search term
+
+                return this.detailData.volunteers.filter(v =>
+                    (v.name && v.name.toLowerCase().includes(searchTerm)) ||
+                    (v.email && v.email.toLowerCase().includes(searchTerm)) ||
+                    (v.phone && String(v.phone).toLowerCase().includes(searchTerm))
+                );
+            },
 
             // === Fungsi Modal ===
             openAddModal() {
@@ -444,33 +458,101 @@
                 try { sessionStorage.removeItem('lastEditEventData'); } catch (e) {}
             },
 
-            openDetailModal(eventData) { /* ... implementasi detail modal ... */ },
+            openDetailModal(eventData) { 
+                 let processedData = {
+                    ...eventData,       
+                    description: this.nl2br(eventData.description || ''), 
+                    volunteers_count: eventData.volunteers_count !== undefined ? eventData.volunteers_count : (eventData.volunteers ? eventData.volunteers.length : 0),
+                    // Pastikan volunteers adalah array
+                    volunteers: Array.isArray(eventData.volunteers) ? eventData.volunteers : [] 
+                };
+                this.detailData = processedData; 
+                this.calculateDetailAnalytics(); 
+                this.detailData.searchTerm = ''; 
+                this.detailModalOpen = true;
+             },
             closeDetailModal() { this.detailModalOpen = false; },
-
-            openDeleteModal(id, title) { /* ... implementasi delete modal ... */ },
-            closeDeleteModal() { /* ... implementasi close delete modal ... */ },
+            
+            openDeleteModal(id, title) { 
+                this.deleteEventId = id; 
+                this.deleteEventTitle = title; 
+                this.deleteFormAction = `${this.baseUrl}/organizer/events/${id}`; 
+                this.deleteModalOpen = true; 
+             },
+            closeDeleteModal() { 
+                this.deleteModalOpen = false; 
+                this.deleteEventId = null; 
+                this.deleteEventTitle = ''; 
+                this.deleteFormAction = '';
+             },
 
             // === Fungsi Submit ===
-            submitEditForm() {
+            submitEditForm() { 
                 const form = this.$refs.editFormRefInner;
-                if (form && this.editData.formAction) {
-                    form.action = this.editData.formAction; // Set action sebelum submit
-                    console.log('Submitting edit form to:', form.action);
-                    form.submit();
-                } else {
-                    console.error('Edit form reference or action URL is missing.');
-                    alert('Terjadi kesalahan. Tidak dapat menyimpan perubahan.');
-                }
+                if (form && this.editData.formAction) { 
+                    form.action = this.editData.formAction; 
+                    console.log('Submitting edit form to:', form.action); // Debug
+                    form.submit(); 
+                } else { 
+                    console.error('Edit form reference or action URL is missing.'); 
+                    alert('Terjadi kesalahan. Tidak dapat menyimpan perubahan.'); 
+                } 
             },
-            submitDeleteForm() { /* ... implementasi submit delete ... */ },
+            submitDeleteForm() { 
+                const form = this.$refs.deleteFormRef;
+                if (form && this.deleteFormAction) { 
+                    form.action = this.deleteFormAction;
+                    console.log('Submitting delete form to:', form.action); // Debug
+                    form.submit(); 
+                } else { 
+                    console.error('Delete form reference or action URL is missing.'); 
+                    alert('Terjadi kesalahan saat menghapus data.'); 
+                } 
+             },
 
             // === Helper ===
-             nl2br(str) { /* ... implementasi nl2br ... */ },
-             formatDateAlpine(dateString) { /* ... implementasi format date ... */ },
+             nl2br(str) { 
+                if (typeof str !== 'string' || str === null) return ''; 
+                var encodedStr = str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); 
+                return encodedStr.replace(/(\r\n|\n\r|\r|\n)/g, '<br>'); 
+             },
+             formatDateAlpine(dateString) { 
+                if (!dateString) return 'N/A'; 
+                try { 
+                    const parts = dateString.split('-');
+                    if (parts.length !== 3) throw new Error('Invalid date format');
+                    const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2])); 
+                    if (isNaN(date.getTime())) throw new Error('Invalid date value'); 
+                    return date.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }); 
+                } catch (e) { 
+                    console.error("Error formatting date:", dateString, e); 
+                    return 'Tgl Tdk Valid'; 
+                } 
+             },
 
             // === Analitik untuk Modal Detail ===
-            calculateDetailAnalytics() { /* ... implementasi kalkulasi analitik ... */ },
-
+            calculateDetailAnalytics() { 
+                const needed = parseInt(this.detailData.volunteers_needed || 0);
+                const count = parseInt(this.detailData.volunteers_count || 0); 
+                let percentage = needed > 0 ? (count / needed) * 100 : (count > 0 ? 100 : 0);
+                this.detailData.progressPercentage = Math.min(100, percentage); 
+                this.detailData.quotaRemaining = Math.max(0, needed - count);
+                this.detailData.daysRemaining = 'N/A'; 
+                if(this.detailData.date){ 
+                    try { 
+                        const eventDateParts = this.detailData.date.split('-');
+                        if (eventDateParts.length !== 3) throw new Error('Invalid date format for calculation');
+                        const eventDate = new Date(Date.UTC(eventDateParts[0], eventDateParts[1] - 1, eventDateParts[2])); 
+                        const today = new Date();
+                        const todayUTC = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+                        if (!isNaN(eventDate.getTime())) { 
+                            const diffTime = eventDate - todayUTC; 
+                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                            this.detailData.daysRemaining = Math.max(0, diffDays); 
+                        } 
+                    } catch(e) { console.error("Error calculating days remaining:", e); } 
+                }
+            },
             // === Validasi & Reopen Modal on Error ===
             initValidation() {
                 // Kondisi untuk membuka kembali modal EDIT
