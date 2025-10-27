@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrganizerAuthController;
+use App\Http\Controllers\VolunteerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,4 +51,10 @@ Route::prefix('organizer')->middleware('organizer.auth')->group(function () {
     // Rute untuk update event (jika sudah dibuat)
     Route::put('/events/{event}', [EventController::class, 'update'])->name('organizer.events.update');
 });
+
+
+
+Route::get('/volunteer/register/{event}', [VolunteerController::class, 'create'])->name('volunteer.create');
+Route::post('/volunteer/register/{event}', [VolunteerController::class, 'store'])->name('volunteer.store');
+
 

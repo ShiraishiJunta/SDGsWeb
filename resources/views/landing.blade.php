@@ -62,19 +62,4 @@
              </div>
         </div>
     </section>
-
-    <!-- CTA -->
-    <section class="py-16 bg-white text-center">
-        <div class="max-w-3xl mx-auto px-6">
-            <h3 class="text-3xl font-bold text-gray-900 mb-4">Siap Menjadi Bagian dari Aksi Sosial?</h3>
-            <p class="text-lg text-gray-600 mb-8">Mari kita ciptakan perubahan kecil yang berdampak besar untuk masyarakat.
-            </p>
-             {{-- --- PERUBAHAN DI SINI --- --}}
-             <a href="{{ route('organizer.register') }}"
-                class="bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all">Daftar
-                Sekarang</a>
-             {{-- --- AKHIR PERUBAHAN --- --}}
-        </div>
-    </section>
 @endsection
-
