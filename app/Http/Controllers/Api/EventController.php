@@ -9,12 +9,16 @@ use Illuminate\Http\Request;
 class EventController extends Controller
 {
     public function index()
-{
-    $events = Event::with('organizer')
-                   ->withCount('registrations') // <-- KEAJAIBANNYA DI SINI
-                   ->latest()
-                   ->get();
+    {
+        $events = Event::with('organizer')
+                       // --- UBAH INI ---
+                       ->withCount('volunteers') // Hitung relasi 'volunteers'
+                       // --- AKHIR PERUBAHAN ---
+                       ->latest()
+                       ->get();
 
-    return response()->json($events);
-}
+        // Ganti nama properti count agar sesuai dengan Javascript (jika perlu, atau ubah JS)
+        // Di sini kita biarkan 'volunteers_count'
+        return response()->json($events);
+    }
 }

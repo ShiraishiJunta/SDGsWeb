@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Volunteer;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,11 +12,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-       $this->call([
-        OrganizerSeeder::class,
-        UserSeeder::class,      // Buat User (relawan)
-        EventSeeder::class,
-        RegistrationSeeder::class, // Baru daftarkan setelah user dan event ada
-    ]);
+        $this->call([
+            OrganizerSeeder::class,
+            UserSeeder::class,
+            EventSeeder::class,
+            // VolunteerSeeder::class,  
+            // Hapus baris ini: RegistrationSeeder::class,
+            // Mungkin tambahkan VolunteerSeeder jika perlu data dummy pendaftar tamu
+            // VolunteerSeeder::class,
+        ]);
     }
 }

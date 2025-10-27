@@ -18,16 +18,20 @@ class Event extends Model
         'contact_phone',
         'contact_email',
         'organizer_id',
+        'description',
+        'photo',
+        'volunteers_needed',
     ];
 
     public function organizer()
     {
-        // Satu event hanya dimiliki oleh satu organizer
         return $this->belongsTo(Organizer::class);
     }
 
-    public function registrations()
+    // --- UBAH RELASI INI ---
+    public function volunteers() // Ganti nama dari registrations menjadi volunteers
     {
-        return $this->hasMany(Registration::class);
+        return $this->hasMany(Volunteer::class); // Hubungkan ke model Volunteer
     }
+    // --- AKHIR PERUBAHAN ---
 }
